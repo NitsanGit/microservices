@@ -184,7 +184,9 @@ spec:
     app: healthstats
   type: ClusterIP
 status:
-  loadBalancer: {}apiVersion: networking.k8s.io/v1
+  loadBalancer: {}
+----
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: microsvc-ingress
