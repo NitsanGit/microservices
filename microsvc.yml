@@ -1,0 +1,235 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: microservices
+spec: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: electricitybill
+  name: electricitybill
+  namespace: microservices
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: electricitybill
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: electricitybill
+    spec:
+      containers:
+      - image: fnacr100.azurecr.io/electricitybill:v1
+        name: electricitybill
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: electricitybill
+  name: electricitybillsvc
+  namespace: microservices
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: electricitybill
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mobilebill
+  name: mobilebill
+  namespace: microservices
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mobilebill
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mobilebill
+    spec:
+      containers:
+      - image: fnacr100.azurecr.io/mobilebill:v1
+        name: mobilebill
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mobilebill
+  name: mobilebillsvc
+  namespace: microservices
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: mobilebill
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: loyaltypoints
+  name: loyaltypoints
+  namespace: microservices
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: loyaltypoints
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: loyaltypoints
+    spec:
+      containers:
+      - image: fnacr100.azurecr.io/loyaltypoints:v1
+        name: loyaltypoints
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: loyaltypoints
+  name: loyaltypointssvc
+  namespace: microservices
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: loyaltypoints
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: healthstats
+  name: healthstats
+  namespace: microservices
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: healthstats
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: healthstats
+    spec:
+      containers:
+      - image: fnacr100.azurecr.io/healthstats:v1
+        name: healthstats
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: healthstats
+  name: healthstatssvc
+  namespace: microservices
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: healthstats
+  type: ClusterIP
+status:
+  loadBalancer: {}apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microsvc-ingress
+  namespace: microservices
+  annotations:
+    kubernetes.io/ingress.class: microsvc
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /electricitybill(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: electricitybillsvc
+            port:
+              number: 80
+      - path: /mobilebill(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: mobilebillsvc
+            port:
+              number: 80
+      - path: /loyalty(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: loyaltypointssvc
+            port:
+              number: 80
+      - path: /healthstats(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: healthstatssvc
+            port:
+              number: 80
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: electricitybillsvc
+            port:
+              number: 80
