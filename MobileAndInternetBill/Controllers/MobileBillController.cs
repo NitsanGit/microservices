@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace MobileAndInternetBill.Controllers
 {
+
+    public class Phone
+    {
+        public String phoneNumber { get; set; }
+    }
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class MobileBillController : ControllerBase
@@ -21,8 +28,9 @@ namespace MobileAndInternetBill.Controllers
 
         // POST api/<MobileBillController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public PhoneAndInternet Post([FromBody] Phone phone)
         {
+            return new PhoneAndInternet(phone.phoneNumber);
         }
 
         // PUT api/<MobileBillController>/5
