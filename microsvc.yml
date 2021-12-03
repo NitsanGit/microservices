@@ -27,7 +27,7 @@ spec:
         app: electricitybill
     spec:
       containers:
-      - image: $(RegistryName).azurecr.io/electricitybill:v1
+      - image: YOUR_REGISTRY.azurecr.io/electricitybill:v1
         name: electricitybill
         resources: {}
 status: {}
@@ -72,7 +72,7 @@ spec:
         app: mobilebill
     spec:
       containers:
-      - image: $(RegistryName).azurecr.io/mobilebill:v1
+      - image: YOUR_REGISTRY.azurecr.io/mobilebill:v1
         name: mobilebill
         resources: {}
 status: {}
@@ -117,7 +117,7 @@ spec:
         app: loyaltypoints
     spec:
       containers:
-      - image: $(RegistryName).azurecr.io/loyaltypoints:v1
+      - image: YOUR_REGISTRY.azurecr.io/loyaltypoints:v1
         name: loyaltypoints
         resources: {}
 status: {}
@@ -162,7 +162,7 @@ spec:
         app: healthstats
     spec:
       containers:
-      - image: $(RegistryName).azurecr.io/healthstats:v1
+      - image: YOUR_REGISTRY.azurecr.io/healthstats:v1
         name: healthstats
         resources: {}
 status: {}
