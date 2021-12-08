@@ -37,7 +37,7 @@ namespace MobileAndInternetBill
             
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MobileAndInternetBill v1");
-              //  c.RoutePrefix = "/mobilebill";
+                c.RoutePrefix = "/mobilebill";
             });
           
             app.UseRouting();
