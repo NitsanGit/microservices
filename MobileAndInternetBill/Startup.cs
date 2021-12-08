@@ -26,6 +26,7 @@ namespace MobileAndInternetBill
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mobile And Internet Bill APIs", Version = "v1" });
+                
             });
         }
 
@@ -33,11 +34,19 @@ namespace MobileAndInternetBill
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwagger();
+            app.UseSwagger( c=>
+            {
+             //   c.RouteTemplate="mobilebill/swagger/MobileBill/swagger.json";
+            });
             
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MobileAndInternetBill v1");
-                c.RoutePrefix = "/mobilebill";
+
+
+                c.RoutePrefix = "swagger";
+                c.SwaggerEndpoint("v1/swagger.json", "Mobile and Internet Bill API V1");
+
+             //   c.SwaggerEndpoint("/mobilebill/swagger/v1/swagger.json", "MobileAndInternetBill v1");
+             //   c.RoutePrefix = "/mobilebill";
             });
           
             app.UseRouting();
