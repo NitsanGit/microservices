@@ -1,196 +1,165 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  creationTimestamp: null
-  name: microservices
-spec: {}
-status: {}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: electricitybill
-  name: electricitybill
-  namespace: microservices
+  name: electricitybill  
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: electricitybill
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: electricitybill
     spec:
       containers:
-      - image: YOUR_REGISTRY.azurecr.io/electricitybill:v1
-        name: electricitybill
-        resources: {}
-status: {}
+      - name: electricitybill
+        image: assutaacrdemo.azurecr.io/electricitybill:v1
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
-  labels:
-    app: electricitybill
-  name: electricitybillsvc
-  namespace: microservices
+  name: electricitybillsvc 
 spec:
+  type: ClusterIP
   ports:
   - port: 80
-    protocol: TCP
-    targetPort: 80
   selector:
     app: electricitybill
-  type: ClusterIP
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: mobilebill
-  name: mobilebill
-  namespace: microservices
+  name: mobilebill  
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: mobilebill
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: mobilebill
     spec:
       containers:
-      - image: YOUR_REGISTRY.azurecr.io/mobilebill:v1
-        name: mobilebill
-        resources: {}
-status: {}
+      - name: mobilebill
+        image: assutaacrdemo.azurecr.io/mobilebill:v1
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
-  labels:
-    app: mobilebill
-  name: mobilebillsvc
-  namespace: microservices
+  name: mobilebillsvc 
 spec:
+  type: ClusterIP
   ports:
   - port: 80
-    protocol: TCP
-    targetPort: 80
   selector:
     app: mobilebill
-  type: ClusterIP
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: loyaltypoints
-  name: loyaltypoints
-  namespace: microservices
+  name: loyaltypoints  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: loyaltypoints
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: loyaltypoints
     spec:
       containers:
-      - image: YOUR_REGISTRY.azurecr.io/loyaltypoints:v1
-        name: loyaltypoints
-        resources: {}
-status: {}
+      - name: loyaltypoints
+        image: assutaacrdemo.azurecr.io/loyaltypoints:v1
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
-  labels:
-    app: loyaltypoints
-  name: loyaltypointssvc
-  namespace: microservices
+  name: loyaltypointssvc 
 spec:
+  type: ClusterIP
   ports:
   - port: 80
-    protocol: TCP
-    targetPort: 80
   selector:
     app: loyaltypoints
-  type: ClusterIP
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: healthstats
-  name: healthstats
-  namespace: microservices
+  name: healthstats  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: healthstats
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: healthstats
     spec:
       containers:
-      - image: YOUR_REGISTRY.azurecr.io/healthstats:v1
-        name: healthstats
-        resources: {}
-status: {}
+      - name: healthstats
+        image: assutaacrdemo.azurecr.io/healthstats:v1
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
-  labels:
-    app: healthstats
-  name: healthstatssvc
-  namespace: microservices
+  name: healthstatssvc 
 spec:
+  type: ClusterIP
   ports:
   - port: 80
-    protocol: TCP
-    targetPort: 80
   selector:
     app: healthstats
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-one  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-one
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-one
+    spec:
+      containers:
+      - name: aks-helloworld-one
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-one  
+spec:
   type: ClusterIP
-status:
-  loadBalancer: {}
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld-one
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: microsvc-ingress
-  namespace: microservices
+  name: aks-workshop-ingress
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
@@ -207,6 +176,7 @@ spec:
             name: electricitybillsvc
             port:
               number: 80
+
       - path: /mobilebill(/|$)(.*)
         pathType: Prefix
         backend:
@@ -214,6 +184,7 @@ spec:
             name: mobilebillsvc
             port:
               number: 80
+      
       - path: /loyalty(/|$)(.*)
         pathType: Prefix
         backend:
@@ -221,6 +192,8 @@ spec:
             name: loyaltypointssvc
             port:
               number: 80
+
+     
       - path: /healthstats(/|$)(.*)
         pathType: Prefix
         backend:
@@ -228,10 +201,31 @@ spec:
             name: healthstatssvc
             port:
               number: 80
+
       - path: /(.*)
         pathType: Prefix
         backend:
           service:
-            name: electricitybillsvc
+            name: aks-helloworld-one
             port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aks-workshop-ingress-static
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /static(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: aks-helloworld-one
+            port: 
               number: 80
